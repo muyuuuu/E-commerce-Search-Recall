@@ -1,11 +1,19 @@
 import torch
+from torch import nn
+
+cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+cls = nn.CrossEntropyLoss()
 
 
-def triplet_loss(anchor, positive, negative, alpha=0.4, device='cuda'):
-    pos_dist = torch.sum((anchor - positive).pow(2), axis=1).mean()
+def infonce_loss(anchor, positive, negative, alpha=0.4, device='cuda'):
+    pos_dist = -cos(anchor, positive)
     anchor = anchor.repeat(10, 1)
-    neg_dist = torch.sum((anchor - negative).pow(2), axis=1).mean()
+    neg_dist = -cos(anchor, negative)
     # print(pos_dist, neg_dist)
-    basic_loss = pos_dist - neg_dist + alpha
-    loss = torch.max(basic_loss, torch.tensor([0], device=device).float())
+    dis = torch.cat([pos_dist, neg_dist], dim=0)
+    label = torch.cat(
+        [torch.ones(anchor.size()),
+         torch.zeros(anchor.size() * 10)])
+
+    loss = cls(dis, label)
     return loss
