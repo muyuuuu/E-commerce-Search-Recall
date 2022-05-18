@@ -20,7 +20,7 @@
 - 初赛为召回阶段，生成 query 和 title 的表示。给定一个 query，后台在 100w 数据中召回最相近的 title，MRR@10 为评价指标。
 - 复赛为排序阶段，假设 query 召回了 10 个候选 title，将 query 和 10 个 title 进行拼接得到一个句子，对这个拼接的句子进行打分，分数越高，排名越前，MRR@10 为评价指标。
 
-因为之前接过图像检索的项目（也是召回出和查询图片最相似的图片），于是就决定参加了。但是丝毫不会 NLP，所以这次比赛变成了一个毫无 NLP 经验的人的比赛（挖坑填坑）之旅，爆肝了很多个版本的代码，跑过很多程序，看过很多论文和源码，完结撒花。关于程序：`main.py` 或 `run.sh` 为入口，路径肯定对不上，请自行 debug。
+因为之前接过图像检索的项目（也是召回出和查询图片最相似的图片），于是就决定参加了。但是丝毫不会 NLP，所以这次比赛变成了一个毫无 NLP 经验的人的比赛（挖坑填坑）之旅，保守估计最开始的一个月爆肝了 10 个版本左右的代码，跑过很多程序，看过很多论文和源码，完结撒花。关于程序：`main.py` 或 `run.sh` 为入口，路径肯定对不上，请自行 debug。
 
 ## 召回阶段
 
@@ -61,11 +61,11 @@ tools 里面是精度转换和结果文件检查。
     </details>
 
 
-2. 在 `unilm` 文件夹下，进行 `UniLM` 预训练。数据为 100w title 数据进行[随机截断](https://github.com/muyuuuu/E-commerce-Search-Recall/blob/main/unilm/utils_unilm.py#L268-L282)。大概 0.265 左右。预训练模型下载: [YunwenTechnology/Unilm](https://github.com/YunwenTechnology/Unilm)
+2. 在 `unilm` 文件夹下，进行 `UniLM` 预训练并微调。数据为 100w title 数据进行[随机截断](https://github.com/muyuuuu/E-commerce-Search-Recall/blob/main/unilm/utils_unilm.py#L268-L282)。大概 0.265 左右。预训练模型下载: [YunwenTechnology/Unilm](https://github.com/YunwenTechnology/Unilm)
 
-3. 在 `simbert` 文件夹下，进行 `simbertv2` 与训练，增加相似度任务和 bart 任务。并对 100w title 数据随机进行 0.3 截断模拟 query。得到 0.31 左右。与训练模型下载：[ZhuiyiTechnology/roformer-sim](https://github.com/ZhuiyiTechnology/roformer-sim)
+3. 在 `simbert` 文件夹下，进行 `simbertv2` 预训练并微调，增加相似度任务和 bart 任务。并对 100w title 数据随机进行 0.3 截断模拟 query。得分 0.31 左右。预训练模型下载：[ZhuiyiTechnology/roformer-sim](https://github.com/ZhuiyiTechnology/roformer-sim)
 
-以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了。我还尝试过其他的诸如：数据增强、transfer-mixup、label-smooth、am-softmax等技巧，以及复现了 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632)等顶会论文，只能说不适用于本次场景。
+以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了。我还尝试过其他的诸如：数据增强、transfer-mixup、label-smooth、am-softmax等技巧，以及复现了 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632) 等顶会论文，只能说不适用于本次场景。
 
 ## 排序阶段
 
