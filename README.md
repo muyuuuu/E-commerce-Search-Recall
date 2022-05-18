@@ -4,7 +4,7 @@
 
 ## 题目背景
 
-电商搜索质量的高低将直接决定最终的成交结果。题目数据分两部分，一部分是 query，一部分是 title，10w 对 query-title  数据是有标注的，还有另外的 90w 无标注 title 数据。如果没办法下载比赛数据，阿里开源了[相似数据](https://github.com/Alibaba-NLP/Multi-CPR/tree/main/data/ecom)。左侧是 query，右侧是 title。
+电商搜索质量的高低将直接决定最终的成交结果。题目数据分两部分，一部分是 query，一部分是 title，10w 对 query-title  数据是有标注的，还有另外的 90w 无标注 title 数据。如果没办法下载比赛数据，阿里开源了[相似数据](https://github.com/Alibaba-NLP/Multi-CPR/tree/main/data/ecom)。数据格式如下：左侧是 query，右侧是 title。
 
 ```
 游民部落电竞馆	游民部落技嘉M27Q27英寸KVM电竞显示器0.5ms170Hz快速液晶2K屏
@@ -18,15 +18,13 @@
 ```
 
 - 初赛为召回阶段，生成 query 和 title 的表示。给定一个 query，后台在 100w 数据中召回最相近的 title，MRR@10 为评价指标。
-- 复赛为排序阶段，假设 query 召回了 10 个候选 title，将 query 和 10 个 title 进行拼接得到一个句子，对这个句子进行打分，分数越高，排名越前，MRR@10 为评价指标。
+- 复赛为排序阶段，假设 query 召回了 10 个候选 title，将 query 和 10 个 title 进行拼接得到一个句子，对这个拼接的句子进行打分，分数越高，排名越前，MRR@10 为评价指标。
 
-因为之前接过图像检索的项目（也是召回出和查询图片最相似的图片），于是就决定参加了。但是丝毫不会 NLP，所以这次比赛变成了一个毫无 NLP 经验的人的比赛（挖坑填坑）之旅。
+因为之前接过图像检索的项目（也是召回出和查询图片最相似的图片），于是就决定参加了。但是丝毫不会 NLP，所以这次比赛变成了一个毫无 NLP 经验的人的比赛（挖坑填坑）之旅，爆肝了很多个版本的代码，跑过很多程序，看过很多论文和源码，完结撒花。关于程序：`main.py` 或 `run.sh` 为入口，路径肯定对不上，请自行 debug。
 
 ## 召回阶段
 
-https://muyuuuu.github.io/2022/03/24/E-commerce-Search-Recall/
-
-因为不知道如何去做，大部分时间都在查阅相关了论文，然后实现。所以代码和专业人士的代码比起来像个玩具。基础 baseline 得分：
+因为不知道如何去做，大部分时间都在查阅相关了论文，然后复现。所以代码和专业人士的代码比起来像个玩具。基础框架 baseline 得分：
 
 1. 实现 DSSM baseline，直接优化距离结果很差，得分 0.057
 2. 实现 CoSENT，余弦距离得分 0.159
@@ -63,12 +61,11 @@ tools 里面是精度转换和结果文件检查。
     </details>
 
 
-
 2. 在 `unilm` 文件夹下，进行 `UniLM` 预训练。数据为 100w title 数据进行[随机截断](https://github.com/muyuuuu/E-commerce-Search-Recall/blob/main/unilm/utils_unilm.py#L268-L282)。大概 0.265 左右。预训练模型下载: [YunwenTechnology/Unilm](https://github.com/YunwenTechnology/Unilm)
 
 3. 在 `simbert` 文件夹下，进行 `simbertv2` 与训练，增加相似度任务和 bart 任务。并对 100w title 数据随机进行 0.3 截断模拟 query。得到 0.31 左右。与训练模型下载：[ZhuiyiTechnology/roformer-sim](https://github.com/ZhuiyiTechnology/roformer-sim)
 
-以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了。我还尝试过其他的诸如：数据增强、transfer-mixup、label smooth、am-softmax等技巧，以及 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632)等顶会论文，只能说不适用于本次场景。
+以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了。我还尝试过其他的诸如：数据增强、transfer-mixup、label-smooth、am-softmax等技巧，以及复现了 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632)等顶会论文，只能说不适用于本次场景。
 
 ## 排序阶段
 
@@ -86,6 +83,6 @@ tools 里面是精度转换和结果文件检查。
 
 # 致谢
 
-- 本仓库中的工作得到西安电子科技大学高性能计算校级公共平台的支持m. Supported by High-performance Computing Platform of XiDian University.
+- 本仓库中的工作得到西安电子科技大学高性能计算校级公共平台的支持. Supported by High-performance Computing Platform of XiDian University.
 - 感谢我的[队友](https://github.com/xzhws)
 - 感谢 [DunZhang](https://github.com/DunZhang) 提供的帮助
