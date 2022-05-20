@@ -81,6 +81,10 @@ tools 里面是精度转换和结果文件检查。
 - [SimBERTv2](https://github.com/ZhuiyiTechnology/roformer-sim)
 - [tensorflow-simcse](https://github.com/jifei/simcse-tf2)
 
+# 其他
+
+我基于 LSH 算法自己实现了一个 ANN [检索工具](https://github.com/muyuuuu/high-performance-LSH)，使用本次赛题的数据在本地测试召回结果还行，欢迎 star。
+
 # 致谢
 
 - 本仓库中的工作得到西安电子科技大学高性能计算校级公共平台的支持. Supported by High-performance Computing Platform of XiDian University.
