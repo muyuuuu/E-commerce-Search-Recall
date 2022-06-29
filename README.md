@@ -1,5 +1,7 @@
 # 电商搜索召回
 
+关于比赛，本人十分反感以及抵制：模型集成和超大 batch 参数等对非 RMB 玩家极度不友好的方式，更喜欢专注算法本身，尽管这样不能取得好成绩。
+
 ![](docs/0.png)
 
 ## 题目背景
@@ -65,13 +67,13 @@ tools 里面是精度转换和结果文件检查。
 
 3. 在 `simbert` 文件夹下，进行 `simbertv2` 预训练并微调，增加相似度任务和 bart 任务。并对 100w title 数据随机进行 0.3 截断模拟 query。得分 0.31 左右。预训练模型下载：[ZhuiyiTechnology/roformer-sim](https://github.com/ZhuiyiTechnology/roformer-sim)
 
-以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了。我还尝试过其他的诸如：数据增强、transfer-mixup、label-smooth、am-softmax等技巧，以及复现了 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632) 等顶会论文，只能说不适用于本次场景。
+以上是稳定提分的 trick，至于其他的学习率升温、模型结构、激活函数和超参等，有些也能提分，但不明显，这里就不细说了，具体参考程序里面的参数就行。我还尝试过其他的诸如：数据增强、transfer-mixup、label-smooth、am-softmax 等技巧，以及复现了 [EASE: Entity-Aware Contrastive Learning of Sentence Embedding](https://github.com/studio-ousia/ease)、[Dense Passage Retrieval](https://github.com/facebookresearch/DPR)、 [Embedding-based Retrieval in Facebook Search](https://arxiv.org/abs/2006.11632) 等顶会论文，只能说不适用于本次场景。
 
 ## 排序阶段
 
 在 `rank` 文件夹下，由于本人丝毫不懂 `tf1.x` 的代码，遂使用了官方的 baseline，没有什么太大修改。即使官方提供了 basline，能使用 `tf1.x` 并提交的人很少，如果官方不提供，怕不是复赛没人了。
 
-如果要说想法，`pair-wise` 那些损失函数吧，肯定比单纯的 NSP 损失函数要好。
+如果要说想法，难例挖掘和 `pair-wise` 那些损失函数吧，肯定比单纯的 NSP 损失函数要好。
 
 # 参考
 
